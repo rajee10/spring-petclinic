@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.owner;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.system.DatabaseInterface;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -27,6 +28,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
@@ -86,6 +91,15 @@ class OwnerController {
 
         // find owners by last name
         Collection<Owner> results = this.owners.findByLastName(owner.getLastName());
+        
+        for (Owner o : results)
+        {
+        	System.out.println(o.toString());
+        }
+        
+        // Shadow Read
+        compareResults(results, owner.getLastName());
+        
         if (results.isEmpty()) {
             // no owners found
             result.rejectValue("lastName", "notFound", "not found");
@@ -101,7 +115,35 @@ class OwnerController {
         }
     }
 
-    @GetMapping("/owners/{ownerId}/edit")
+    private void compareResults(Collection<Owner> results, String ownerLastName) {
+    	// Initialize object
+        DatabaseInterface dbInterface = new DatabaseInterface();
+        
+        Collection<Owner> newResults = new ArrayList<>();
+        
+        // DB structure
+        // 1) id, 2)first_name, 3)last_name, 4)address, 5)city, 6)telephone
+        try
+        {
+        	ResultSet resultSet = dbInterface.getResults(OwnerRepository.LAST_NAME_QUERY + ownerLastName + "%\";");
+        	while (resultSet.next())
+        	{
+        		String firstName	= 	resultSet.getString(2);
+        		String lastName 	= 	resultSet.getString(3);
+        		String address 		= 	resultSet.getString(4);
+        		String city			= 	resultSet.getString(5);
+        		String telephone 	= 	resultSet.getString(6);
+        		
+        		newResults.add(new Owner(firstName, lastName, address, city, telephone));
+        	}
+        }
+        catch (SQLException sqle) { sqle.printStackTrace(); }	
+        
+        if (results.size() == newResults.size())
+        	System.out.println("Same size -- compare deeper");
+	}
+
+	@GetMapping("/owners/{ownerId}/edit")
     public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
         Owner owner = this.owners.findById(ownerId);
         model.addAttribute(owner);

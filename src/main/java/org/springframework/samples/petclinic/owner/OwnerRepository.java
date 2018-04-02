@@ -40,6 +40,11 @@ public interface OwnerRepository extends Repository<Owner, Integer> {
      * @return a Collection of matching {@link Owner}s (or an empty Collection if none
      * found)
      */
+	
+	// For new DB
+	public static final String LAST_NAME_QUERY = "SELECT DISTINCT `owners`.* FROM `owners` LEFT JOIN `pets` ON `owners`.`id` = `pets`.`owner_id` "
+			+ "WHERE `owners`.`last_name` LIKE \"%";	
+	
     @Query("SELECT DISTINCT owner FROM Owner owner left join fetch owner.pets WHERE owner.lastName LIKE :lastName%")
     @Transactional(readOnly = true)
     Collection<Owner> findByLastName(@Param("lastName") String lastName);

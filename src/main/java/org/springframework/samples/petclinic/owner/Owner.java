@@ -45,7 +45,62 @@ import org.springframework.samples.petclinic.model.Person;
 @Entity
 @Table(name = "owners")
 public class Owner extends Person {
-    @Column(name = "address")
+    
+	public Owner() {}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((address == null) ? 0 : address.hashCode());
+		result = prime * result + ((city == null) ? 0 : city.hashCode());
+		result = prime * result + ((pets == null) ? 0 : pets.hashCode());
+		result = prime * result + ((telephone == null) ? 0 : telephone.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Owner other = (Owner) obj;
+		if (address == null) {
+			if (other.address != null)
+				return false;
+		} else if (!address.equals(other.address))
+			return false;
+		if (city == null) {
+			if (other.city != null)
+				return false;
+		} else if (!city.equals(other.city))
+			return false;
+		if (telephone == null) {
+			if (other.telephone != null)
+				return false;
+		} else if (!telephone.equals(other.telephone))
+			return false;
+		return true;
+	}
+
+	public Owner(@NotEmpty String firstName, @NotEmpty String lastName, 
+			@NotEmpty String address, @NotEmpty String city,
+			@NotEmpty @Digits(fraction = 0, integer = 10) String telephone) {
+		super();
+		this.address = address;
+		this.city = city;
+		this.telephone = telephone;
+		
+		super.setFirstName(firstName);
+		super.setLastName(lastName);
+	}
+	
+	
+
+	@Column(name = "address")
     @NotEmpty
     private String address;
 

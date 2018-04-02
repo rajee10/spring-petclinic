@@ -16,8 +16,16 @@
 
 package org.springframework.samples.petclinic;
 
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.samples.petclinic.owner.OwnerRepository;
+import org.springframework.samples.petclinic.system.DatabaseInterface;
+
+import com.mysql.jdbc.Connection;
 
 /**
  * PetClinic Spring Boot Application.
@@ -29,7 +37,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class PetClinicApplication {
 
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(PetClinicApplication.class, args);
+       SpringApplication.run(PetClinicApplication.class, args);
     }
 
 }
