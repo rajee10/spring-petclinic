@@ -1,13 +1,13 @@
 package org.springframework.samples.petclinic.owner;
+import java.util.ArrayList;
 
 public class OwnerStorage {
 
-	int size = 999;
-	Owner[] ownerList;
+	ArrayList<Owner> ownerList = new ArrayList<Owner>();
 	
 	public OwnerStorage() {
-		ownerList = new Owner[size];
-	}
+
+    }
 	
  	public void forklift() {
 
@@ -17,14 +17,14 @@ public class OwnerStorage {
  	public int checkConsistency() {
  		int inconsistencies = 0;
  		
- 		for(int i = 0; i < 999; i++)
+ 		for(int i=0; i< ownerList.size(); i++)
  		{
  	//	Owner expected = 
- 		Owner actual = ownerList[i];
+ 		Owner actual = ownerList.get(i);
  		
  		if(!expected.equals(actual)) {
  			{
- 				ownerList[i] = expected;
+ 				ownerList.set(i, expected);
  				
  				inconsistencies++;
  				violation(i, expected, actual);
